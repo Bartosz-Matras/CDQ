@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    hostname: app
+    build: ..
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/bank-transactions
+      - MONGODB_URI=mongodb://mongo:27017/bank-transactions
+    networks:
+      - cdq-net
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mongo:
+    hostname: mongo
+    image: mongo:8.3.2
+    ports:
+      - "27017:27017"
+    networks:
+      - cdq-net
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo-data:
+
+networks:
+  cdq-net:
+    driver: bridge

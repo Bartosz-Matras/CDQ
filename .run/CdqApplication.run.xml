@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CdqApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="MONGODB_URI" value="mongodb://mongo:27017/bank-transactions" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.bartoszmatras.cdq.CdqApplication" />
+    <module name="cdq.main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.bartoszmatras.cdq.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
