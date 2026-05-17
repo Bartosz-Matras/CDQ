@@ -50,3 +50,9 @@ Sample transaction data for testing imports is available in the `local_deploymen
 ## API Documentation
 Once the application is running, you can view the interactive API documentation (Swagger UI) by navigating to:
 - http://localhost:8080/swagger-ui.html
+
+## Additional Documentation
+You can find more detailed documentation in the `docs/` directory:
+- [API cURL Commands](docs/API_CURLS.md) - Sample requests for all API endpoints.
+- [Gradle Commands](docs/GRADLE_COMMANDS.md) - Useful Gradle scripts to build, test, and run the project.
+- [Architecture & Trade-offs](docs/TRANSACTION_TRADEOFFS.md) - Details regarding data management logic versus MongoDB transactions.
