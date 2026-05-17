@@ -1,9 +1,8 @@
 spring:
   application:
     name: cdq
-  data:
-    mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/bank-transactions}
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/bank-transactions}
   servlet:
     multipart:
       max-file-size: 50MB
@@ -29,8 +28,3 @@ management:
       exposure:
         include: health,info,metrics
       base-path: /actuator
-
-#logging:
-#  level:
-#    root: INFO
-#    com.bartoszmatras.cdq: DEBUG
