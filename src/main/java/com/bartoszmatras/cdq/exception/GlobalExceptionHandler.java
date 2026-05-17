@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Map<String, Object>> handleMissingServletRequestParameter(MissingServletRequestParameterException e) {
         return ResponseEntity.badRequest().body(Map.of(
-                ERROR, "Bad request",
+                ERROR, BAD_REQUEST,
                 MESSAGE, "Missing required parameter: " + e.getParameterName(),
                 TIMESTAMP, Instant.now().toString()
         ));

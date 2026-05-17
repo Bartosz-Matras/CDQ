@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="CdqApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <envs>
-      <env name="MONGODB_URI" value="mongodb://mongo:27017/bank-transactions" />
+      <env name="MONGODB_URI" value="mongodb://localhost:27017/bank-transactions" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.bartoszmatras.cdq.CdqApplication" />
     <module name="cdq.main" />
