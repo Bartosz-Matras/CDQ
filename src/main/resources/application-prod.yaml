@@ -1,0 +1,9 @@
+spring:
+  mongodb:
+    uri: ${MONGODB_URI}
+
+logging:
+  level:
+    root: WARN
+    com.bartoszmatras.cdq: INFO
+

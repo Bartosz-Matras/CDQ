@@ -1,0 +1,8 @@
+spring:
+  mongodb:
+    uri: mongodb://localhost:27017/bank-transactions
+
+logging:
+  level:
+    com.bartoszmatras.cdq: DEBUG
+

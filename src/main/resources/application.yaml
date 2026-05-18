@@ -1,6 +1,8 @@
 spring:
   application:
     name: cdq
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
   mongodb:
     uri: ${MONGODB_URI:mongodb://localhost:27017/bank-transactions}
   servlet:

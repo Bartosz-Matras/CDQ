@@ -17,10 +17,15 @@ This is the recommended approach for development. It runs MongoDB in a Docker co
    ```bash
    cd local_deployment && docker-compose -f docker-compose.yml up -d
    ```
-2. Navigate back to the root directory and run the Spring Boot application using the Gradle wrapper:
+2. Run the Spring Boot application using one of the following methods:
+
+   **Gradle wrapper:**
    ```bash
    cd .. && ./gradlew bootRun
    ```
+
+   **IntelliJ IDEA run configuration:**  
+   A shared run configuration is available in `.run/CdqApplication.run.xml`. It is automatically detected by IntelliJ — simply select **CdqApplication** from the Run menu.
 
 By default, the application will be available at `http://localhost:8080` and will connect to the local MongoDB instance at `mongodb://localhost:27017/bank-transactions`.
 
@@ -34,15 +39,32 @@ If you want to run the entire stack (both the Java application and MongoDB) in D
 
 ## Configuration
 
-The application is configured to use environment variables for key settings. The most important one is the MongoDB connection URI.
+### Spring Profiles
 
-- **`MONGODB_URI`**: The connection string for MongoDB. 
-  - Default: `mongodb://localhost:27017/bank-transactions` (when running via Gradle) or `mongodb://mongo:27017/bank-transactions` (when running via `docker-compose-app.yml`).
+The application uses Spring profiles to manage environment-specific configuration:
 
-To override it locally, you can pass the environment variable before the run command:
+| Profile   | Purpose                        | MongoDB URI                                      |
+|-----------|--------------------------------|--------------------------------------------------|
+| `local`   | Local development (default)    | `mongodb://localhost:27017/bank-transactions`     |
+| `dev`     | Shared dev environment         | Requires `MONGODB_URI` env variable              |
+| `prod`    | Production                     | Requires `MONGODB_URI` env variable              |
+
+Activate a profile via environment variable:
 ```bash
-MONGODB_URI="mongodb://your-custom-host:27017/your-db" ./gradlew bootRun
+SPRING_PROFILES_ACTIVE=dev MONGODB_URI=mongodb://localhost:27017/bank-transactions ./gradlew bootRun
 ```
+
+Or via command-line argument:
+```bash
+./gradlew bootRun --args='--spring.profiles.active=dev --spring.mongodb.uri=mongodb://localhost:27017/bank-transactions'
+```
+
+### Key Environment Variables
+
+| Variable                | Description                        | Required in        |
+|-------------------------|------------------------------------|--------------------|
+| `MONGODB_URI`           | MongoDB connection string          | `dev`, `prod`      |
+| `SPRING_PROFILES_ACTIVE`| Active Spring profile              | Optional (defaults to `local`) |
 
 ## Sample Data
 Sample transaction data for testing imports is available in the `local_deployment/sample-data/` directory.
