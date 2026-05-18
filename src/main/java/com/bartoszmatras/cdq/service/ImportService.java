@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface ImportService {
     ImportJob createAndProcessJob(MultipartFile file, String originalFilename) throws IOException;
-    ImportJob createJob(String originalFilename);
     Optional<ImportJob> getJob(String jobId);
     List<ImportJob> getAllJobs();
 }
