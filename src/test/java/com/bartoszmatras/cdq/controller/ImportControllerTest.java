@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.RejectedExecutionException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -116,5 +117,21 @@ class ImportControllerTest {
         mockMvc.perform(get("/api/v1/imports"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].jobId").value(JOB_ID));
+    }
+
+    @Test
+    void uploadCsv_shouldReturn503WhenThreadPoolFull() throws Exception {
+        // given
+        var file = new MockMultipartFile("file", "test.csv",
+                MediaType.TEXT_PLAIN_VALUE, "content".getBytes());
+
+        Mockito.when(importServiceImpl.createAndProcessJob(any(), anyString()))
+                .thenThrow(new RejectedExecutionException("Import service is at capacity. Please try again later."));
+
+        // when & then
+        mockMvc.perform(multipart("/api/v1/imports").file(file))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.error").value("Service unavailable"))
+                .andExpect(jsonPath("$.message").value("Import service is at capacity. Please try again later."));
     }
 }

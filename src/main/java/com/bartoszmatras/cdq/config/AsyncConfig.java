@@ -1,5 +1,6 @@
 package com.bartoszmatras.cdq.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,8 +8,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.RejectedExecutionException;
 
+@Slf4j
 @Configuration
 @EnableAsync
 public class AsyncConfig {
@@ -29,7 +31,13 @@ public class AsyncConfig {
         executor.setMaxPoolSize(maxSize);
         executor.setQueueCapacity(queueCapacity);
         executor.setThreadNamePrefix("import-");
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setRejectedExecutionHandler((runnable, pool) -> {
+            log.error("Import task rejected - thread pool and queue are full. "
+                    + "Pool size: {}, active: {}, queue size: {}",
+                    pool.getPoolSize(), pool.getActiveCount(), pool.getQueue().size());
+            throw new RejectedExecutionException(
+                    "Import service is at capacity. Please try again later.");
+        });
         executor.initialize();
         return executor;
     }

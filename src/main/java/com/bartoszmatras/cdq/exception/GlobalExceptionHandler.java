@@ -12,6 +12,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
 @RestControllerAdvice
@@ -63,6 +64,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of(
                 ERROR, BAD_REQUEST,
                 MESSAGE, "Missing required parameter: " + e.getParameterName(),
+                TIMESTAMP, Instant.now().toString()
+        ));
+    }
+
+    @ExceptionHandler(RejectedExecutionException.class)
+    public ResponseEntity<Map<String, Object>> handleRejectedExecution(RejectedExecutionException e) {
+        log.warn("Task rejected due to capacity: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Map.of(
+                ERROR, "Service unavailable",
+                MESSAGE, "Import service is at capacity. Please try again later.",
                 TIMESTAMP, Instant.now().toString()
         ));
     }
