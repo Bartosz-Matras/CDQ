@@ -61,6 +61,14 @@ class StatisticsControllerTest {
     }
 
     @Test
+    void byCategory_shouldReturn400WhenInvalidMonthFormat() throws Exception {
+        // given & when & then
+        mockMvc.perform(get("/api/v1/statistics/by-category").param("month", "invalid"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid month format: 'invalid'. Expected format: yyyy-MM (e.g. 2026-01)"));
+    }
+
+    @Test
     void byIban_shouldReturnData() throws Exception {
         // given
         var iban = "DE12345678901234567890";
@@ -99,6 +107,14 @@ class StatisticsControllerTest {
     }
 
     @Test
+    void byIban_shouldReturn400WhenInvalidMonthFormat() throws Exception {
+        // given & when & then
+        mockMvc.perform(get("/api/v1/statistics/by-iban").param("month", "2026-13"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
     void byMonth_shouldReturnData() throws Exception {
         // given
         var month = "2026-01";
@@ -134,5 +150,21 @@ class StatisticsControllerTest {
                 .andExpect(jsonPath("$.queryDescription").value("Monthly statistics from 2026-01 to 2026-02"))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data.length()").value(0));
+    }
+
+    @Test
+    void byMonth_shouldReturn400WhenInvalidFromFormat() throws Exception {
+        // given & when & then
+        mockMvc.perform(get("/api/v1/statistics/by-month").param("from", "abc").param("to", "2026-02"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid month format: 'abc'. Expected format: yyyy-MM (e.g. 2026-01)"));
+    }
+
+    @Test
+    void byMonth_shouldReturn400WhenFromIsAfterTo() throws Exception {
+        // given & when & then
+        mockMvc.perform(get("/api/v1/statistics/by-month").param("from", "2026-03").param("to", "2026-01"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("'from' month must not be after 'to' month"));
     }
 }

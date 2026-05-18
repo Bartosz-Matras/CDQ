@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class StatisticsControllerIntegrationTest extends AbstractIntegrationTest {
+class StatisticsControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private MongoTemplate mongoTemplate;
