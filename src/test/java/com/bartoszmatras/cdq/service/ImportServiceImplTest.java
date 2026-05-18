@@ -76,13 +76,13 @@ class ImportServiceImplTest {
         var result = importService.getJob(JOB_ID);
 
         // then
-        assertNotNull(result);
-        assertEquals(JOB_ID, result.getId());
+        assertTrue(result.isPresent());
+        assertEquals(JOB_ID, result.get().getId());
         verify(importJobRepository).findById(JOB_ID);
     }
 
     @Test
-    void shouldReturnNullWhenJobDoesNotExist() {
+    void shouldReturnEmptyWhenJobDoesNotExist() {
         // given
         when(importJobRepository.findById(JOB_ID)).thenReturn(Optional.empty());
 
@@ -90,7 +90,7 @@ class ImportServiceImplTest {
         var result = importService.getJob(JOB_ID);
 
         // then
-        assertNull(result);
+        assertTrue(result.isEmpty());
         verify(importJobRepository).findById(JOB_ID);
     }
 

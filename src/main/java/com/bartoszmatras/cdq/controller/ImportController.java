@@ -3,7 +3,7 @@ package com.bartoszmatras.cdq.controller;
 import com.bartoszmatras.cdq.dto.ImportResponse;
 import com.bartoszmatras.cdq.dto.ImportStatusResponse;
 import com.bartoszmatras.cdq.model.ImportStatus;
-import com.bartoszmatras.cdq.service.ImportServiceImpl;
+import com.bartoszmatras.cdq.service.ImportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 @Tag(name = "Import", description = "CSV file import operations")
 public class ImportController {
 
-    private final ImportServiceImpl importServiceImpl;
+    private final ImportService importService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload a CSV file with bank transactions")
@@ -39,12 +39,12 @@ public class ImportController {
         }
 
         try {
-            var job = importServiceImpl.createAndProcessJob(file, originalFilename);
+            var job = importService.createAndProcessJob(file, originalFilename);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                     ImportResponse.builder()
                             .jobId(job.getId())
                             .status(ImportStatus.PROCESSING)
-                            .message("File accepted. Use GET /api/imports/" + job.getId() + " to check status.")
+                            .message("File accepted. Use GET /api/v1/imports/" + job.getId() + " to check status.")
                             .build()
             );
         } catch (IOException e) {
@@ -56,17 +56,15 @@ public class ImportController {
     @GetMapping("/{jobId}")
     @Operation(summary = "Check the status of an import job")
     public ResponseEntity<ImportStatusResponse> getImportStatus(@PathVariable("jobId") String jobId) {
-        var job = importServiceImpl.getJob(jobId);
-        if (job == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(ImportStatusResponse.from(job));
+        return importService.getJob(jobId)
+                .map(job -> ResponseEntity.ok(ImportStatusResponse.from(job)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
     @Operation(summary = "List all import jobs")
     public ResponseEntity<List<ImportStatusResponse>> listImports() {
-        var jobs = importServiceImpl.getAllJobs().stream()
+        var jobs = importService.getAllJobs().stream()
                 .map(ImportStatusResponse::from)
                 .toList();
         return ResponseEntity.ok(jobs);

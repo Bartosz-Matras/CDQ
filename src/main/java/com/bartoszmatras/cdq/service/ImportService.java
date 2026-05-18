@@ -5,10 +5,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface ImportService {
     ImportJob createAndProcessJob(MultipartFile file, String originalFilename) throws IOException;
     ImportJob createJob(String originalFilename);
-    ImportJob getJob(String jobId);
+    Optional<ImportJob> getJob(String jobId);
     List<ImportJob> getAllJobs();
 }

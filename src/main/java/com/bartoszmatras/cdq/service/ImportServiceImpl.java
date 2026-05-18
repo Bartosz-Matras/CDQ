@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,8 +34,8 @@ public class ImportServiceImpl implements ImportService {
     }
 
     @Override
-    public ImportJob getJob(String jobId) {
-        return importJobRepository.findById(jobId).orElse(null);
+    public Optional<ImportJob> getJob(String jobId) {
+        return importJobRepository.findById(jobId);
     }
 
     @Override

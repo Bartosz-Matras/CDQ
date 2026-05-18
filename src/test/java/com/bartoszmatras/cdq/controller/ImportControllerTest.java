@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -79,7 +80,7 @@ class ImportControllerTest {
     @Test
     void getImportStatus_shouldFailWhenJobNotFound() throws Exception {
         // given
-        Mockito.when(importServiceImpl.getJob(JOB_ID)).thenReturn(null);
+        Mockito.when(importServiceImpl.getJob(JOB_ID)).thenReturn(Optional.empty());
 
         // when & then
         mockMvc.perform(get("/api/v1/imports/job123"))
@@ -93,7 +94,7 @@ class ImportControllerTest {
                 .id(JOB_ID)
                 .status(ImportStatus.COMPLETED)
                 .build();
-        Mockito.when(importServiceImpl.getJob(JOB_ID)).thenReturn(job);
+        Mockito.when(importServiceImpl.getJob(JOB_ID)).thenReturn(Optional.of(job));
 
         // when & then
         mockMvc.perform(get("/api/v1/imports/job123"))

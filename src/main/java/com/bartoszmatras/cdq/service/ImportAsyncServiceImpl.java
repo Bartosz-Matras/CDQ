@@ -110,6 +110,14 @@ public class ImportAsyncServiceImpl implements ImportAsyncService{
         job.setErrors(errors);
         job.setCompletedAt(Instant.now());
         importJobRepository.save(job);
+
+        // Clean up temporary file
+        try {
+            Files.deleteIfExists(csvFilePath);
+            log.debug("Deleted temporary file: {}", csvFilePath);
+        } catch (Exception e) {
+            log.warn("Failed to delete temporary file: {}", csvFilePath, e);
+        }
     }
 
     private Transaction mapToTransaction(CsvTransactionRow row, String jobId) {
