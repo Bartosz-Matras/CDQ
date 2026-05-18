@@ -73,6 +73,9 @@ Sample transaction data for testing imports is available in the `local_deploymen
 Once the application is running, you can view the interactive API documentation (Swagger UI) by navigating to:
 - http://localhost:8080/swagger-ui.html
 
+## Test results
+![test-results.png](test-results.png)
+
 ## Additional Documentation
 You can find more detailed documentation in the `docs/` directory:
 - [API cURL Commands](docs/API_CURLS.md) - Sample requests for all API endpoints.

@@ -44,7 +44,8 @@ public class ImportAsyncServiceImpl implements ImportAsyncService{
     @Override
     @Async("importTaskExecutor")
     public void processFileAsync(String jobId, Path csvFilePath) {
-        var job = importJobRepository.findById(jobId).orElseThrow();
+        var job = importJobRepository.findById(jobId)
+                .orElseThrow(() -> new IllegalStateException("Import job not found: " + jobId));
         job.setStatus(ImportStatus.PROCESSING);
         importJobRepository.save(job);
 
@@ -61,7 +62,7 @@ public class ImportAsyncServiceImpl implements ImportAsyncService{
                 chunk = parser.nextChunk(chunkSize);
                 if (chunk.isEmpty()) break;
 
-                var validTransactions = new ArrayList<>();
+                var validTransactions = new ArrayList<Transaction>();
 
                 for (var row : chunk) {
                     totalRows++;

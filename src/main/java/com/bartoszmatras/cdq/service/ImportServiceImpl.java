@@ -27,7 +27,12 @@ public class ImportServiceImpl implements ImportService {
     public ImportJob createAndProcessJob(MultipartFile file, String originalFilename) throws IOException {
         var job = createJob(originalFilename);
         var tempFile = Files.createTempFile("import-" + job.getId() + "-", ".csv");
-        file.transferTo(tempFile.toFile());
+        try {
+            file.transferTo(tempFile.toFile());
+        } catch (IOException e) {
+            Files.deleteIfExists(tempFile);
+            throw e;
+        }
         log.debug("Saved uploaded file to temporary location: {}", tempFile);
         importAsyncService.processFileAsync(job.getId(), tempFile);
         return job;
